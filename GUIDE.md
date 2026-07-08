@@ -1,114 +1,133 @@
-\# 📚 Guía de Referencia - Allergen Manager
+# 📚 Guía de Referencia - Allergen Manager
 
+---
 
+## 1. Entornos Virtuales en Python
 
-\---
-
-
-
-\## 1. Entornos Virtuales en Python
-
-
-
-\### ¿Qué es?
-
+### ¿Qué es?
 Una burbuja aislada que contiene las dependencias (librerías)
-
 específicas de un proyecto, sin interferir con otros proyectos
-
 ni con el Python global de tu máquina.
+Equivalente a `node_modules` en proyectos JavaScript/React.
 
-Equivalente a `node\_modules` en proyectos JavaScript/React.
+### Comandos esenciales
 
-
-
-\### Comandos esenciales
-
-
-
-\*\*Crear el entorno virtual:\*\*
-
+**Crear el entorno virtual:**
 ```bash
-
 python -m venv venv
-
 ```
-
-\*\*Activarlo en Mac/Linux:\*\*
-
+**Activarlo en Mac/Linux:**
 ```bash
-
 source venv/bin/activate
-
 ```
-
-\*\*Activarlo en Windows:\*\*
-
-```bash
-
-venv\\Scripts\\activate
-
+**Activarlo en Windows:**
+```bash PowerShell/CMD
+venv\Scripts\activate
 ```
-
-\*\*Desactivarlo:\*\*
-
+```bash Git Bash
+source venv\Scripts\activate
+```
+**Desactivarlo:**
 ```bash
-
 deactivate
-
 ```
-
-\*\*Guardar dependencias:\*\*
-
+**Guardar dependencias:**
 ```bash
-
 pip freeze > requirements.txt
-
 ```
-
-\*\*Instalar dependencias desde archivo:\*\*
-
+**Instalar dependencias desde archivo:**
 ```bash
-
 pip install -r requirements.txt
-
 ```
-
-\### ⚠️ Importante
-
+### ⚠️ Importante
 `venv/` nunca se sube a GitHub — está en `.gitignore`.
-
 Cada máquina genera el suyo propio con `pip install -r requirements.txt`.
 
+---
+
+## 2. Librerías del proyecto
 
 
-\---
+|
+ Librería 
+|
+ Para qué sirve 
+|
+|
+---
+|
+---
+|
+|
+`flask`
+|
+ Framework web principal 
+|
+|
+`flask-sqlalchemy`
+|
+ Integra SQLAlchemy con Flask 
+|
+|
+`flask-migrate`
+|
+ Gestiona versiones del esquema de BBDD 
+|
+|
+`flask-jwt-extended`
+|
+ Gestión de tokens JWT para rutas protegidas 
+|
+|
+`psycopg2-binary`
+|
+ Driver que conecta Python con PostgreSQL 
+|
+|
+`python-dotenv`
+|
+ Lee variables de entorno del archivo 
+`.env`
+|
+|
+`flask-cors`
+|
+ Permite peticiones desde el frontend React 
+|
 
+---
+## 3. CORS (Cross-Origin Resource Sharing)
 
+### ¿Qué es?
+Un mecanismo de seguridad del navegador que bloquea 
+peticiones HTTP entre dominios distintos por defecto.
 
-\## 2. Librerías del proyecto
+### El problema que resuelve
+Sin CORS, cuando tu React (localhost:3000) intenta 
+hacer un fetch a tu Flask (localhost:5000), el navegador 
+lo bloquea porque son orígenes distintos (diferente puerto 
+= diferente origen).
 
+### Cómo funciona
+El navegador antes de cada petición "real" envía una 
+petición previa (OPTIONS) preguntando al servidor:
+"¿Aceptas peticiones de este origen?"
+Si el servidor responde que sí → deja pasar la petición.
+Si no responde o dice no → la bloquea.
 
+### Configuración en Flask
 
-| Librería | Para qué sirve |
+**Permitir todos los orígenes (desarrollo):**
+```python
+CORS(app)
+```
 
-|---|---|
+**Permitir solo tu frontend (producción):**
+```python
+CORS(app, origins=["http://localhost:3000"])
+```
 
-| `flask` | Framework web principal |
-
-| `flask-sqlalchemy` | Integra SQLAlchemy con Flask |
-
-| `flask-migrate` | Gestiona versiones del esquema de BBDD |
-
-| `flask-jwt-extended` | Gestión de tokens JWT para rutas protegidas |
-
-| `psycopg2-binary` | Driver que conecta Python con PostgreSQL |
-
-| `python-dotenv` | Lee variables de entorno del archivo `.env` |
-
-| `flask-cors` | Permite peticiones desde el frontend React |
-
-
-
-\---
-
+### ⚠️ Importante
+En desarrollo `CORS(app)` es suficiente.
+En producción siempre especifica los orígenes permitidos.
+---
