@@ -23,5 +23,7 @@ def create_app():
     app.register_blueprint(allergen_bp, url_prefix='/api/allergen')
     
     from models import User, Allergen, Ingredient, Dish, DishIngredient
+    from admin import setup_admin
+    setup_admin(app)
     return app  
 
