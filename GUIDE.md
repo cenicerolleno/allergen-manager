@@ -131,3 +131,43 @@ CORS(app, origins=["http://localhost:3000"])
 En desarrollo `CORS(app)` es suficiente.
 En producción siempre especifica los orígenes permitidos.
 ---
+## 4. Manejo de errores: try/except vs condicionales
+
+### ¿Cuándo usar cada uno?
+
+**Condicionales (if/else)** → para validar datos del cliente (4xx)
+Cuando el error depende de lo que manda el usuario.
+```python
+if 'username' not in body:
+    return jsonify({'error': 'username es obligatorio'}), 400
+```
+
+**try/except** → para errores del servidor (5xx)
+Cuando el error puede ocurrir independientemente del cliente
+(caída de BD, timeout, error de SQLAlchemy...).
+```python
+try:
+    users = db.session.execute(db.select(User)).scalars().all()
+except Exception as e:
+    return jsonify({'error': 'Error interno del servidor'}), 500
+```
+
+### Estructura básica
+```python
+try:
+    # código que puede fallar
+    resultado = operacion_riesgosa()
+except TipoDeError as e:
+    # qué hacer si falla
+    return jsonify({'error': str(e)}), 500
+finally:
+    # opcional: se ejecuta siempre, falle o no
+    pass
+```
+
+### En endpoints Flask el patrón habitual es:
+- **GET lista** → try/except alrededor de la consulta
+- **POST** → if/else para validar body + try/except para guardar en BD
+- **GET por id** → if/else para verificar que existe el recurso (404)
+- **PUT** → ambos combinados
+---
