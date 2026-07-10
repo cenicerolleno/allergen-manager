@@ -1,7 +1,8 @@
 from flask import Blueprint, request, jsonify
-from extensions import bcrypt, jwt, db
+from extensions import bcrypt, db
 from models import User
 from sqlalchemy.exc import IntegrityError
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity    
 
 
 auth_bp = Blueprint('auth', __name__)
@@ -37,3 +38,30 @@ def signup():
         return jsonify({'msg': 'Ya existe un usuario con ese email'}), 400
    
     return jsonify({'msg': 'Usuario registrado!', 'register': new_register.serialize()}), 200
+
+
+@auth_bp.route('/login', methods=['POST'])
+def login():
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg': 'Debes enviar informacion en el body'}), 400
+
+    if 'email' not in body:
+        return jsonify({'msg': 'Debes proporcionar un correo electrónico'}), 400
+
+    if 'password' not in body:
+        return jsonify({'msg': 'Debes proporcionar una contraseña'}), 400
+
+    user = User.query.filter_by(email=body['email']).first()
+
+    if user is None:
+        return jsonify({'msg': 'Usuario o contraseña incorrecta'}), 400
+    
+    if not bcrypt.check_password_hash(user.password_hash, body['password']):
+        return jsonify({'msg': 'Usuario o contraseña incorrecta'}), 400
+    
+    access_token = create_access_token(identity=user.email)
+    return jsonify({
+        'msg': 'Login exitoso', 
+        'token': access_token
+        }), 200
