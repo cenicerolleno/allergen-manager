@@ -1,6 +1,8 @@
 from flask import Blueprint, jsonify
 from models import User
 from extensions import db
+from flask_jwt_extended import jwt_required
+
 
 
 user_bp = Blueprint('user', __name__)
@@ -8,6 +10,7 @@ user_bp = Blueprint('user', __name__)
 
 
 @user_bp.route('/', methods=['GET'])
+@jwt_required()
 def get_all_users():
     
     try:
@@ -21,6 +24,7 @@ def get_all_users():
         return jsonify({'error': 'Error interno del servidor'}), 500
     
 @user_bp.route('/<int:user_id>', methods=['GET'])
+@jwt_required()
 def get_user_by_id(user_id):
     
     user = db.session.get(User, user_id)

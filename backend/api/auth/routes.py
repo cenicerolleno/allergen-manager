@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from extensions import bcrypt, db
 from models import User
 from sqlalchemy.exc import IntegrityError
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity    
+from flask_jwt_extended import create_access_token    
 
 
 auth_bp = Blueprint('auth', __name__)
