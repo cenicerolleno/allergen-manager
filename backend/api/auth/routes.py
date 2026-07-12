@@ -60,7 +60,10 @@ def login():
     if not bcrypt.check_password_hash(user.password_hash, body['password']):
         return jsonify({'msg': 'Usuario o contraseña incorrecta'}), 400
     
-    access_token = create_access_token(identity=user.email)
+    access_token = create_access_token(
+        identity=user.email,
+        additional_claims={'is_admin': user.is_admin}
+        )
     return jsonify({
         'msg': 'Login exitoso', 
         'token': access_token

@@ -1,7 +1,7 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from models import User
-from extensions import db
-from flask_jwt_extended import jwt_required
+from extensions import db, bcrypt
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
 
 
@@ -34,5 +34,51 @@ def get_user_by_id(user_id):
     
     return jsonify({
         'msg': 'ok',
+        'user': user.serialize()
+    }), 200
+    
+@user_bp.route('/<int:user_id>', methods=['PUT'])
+@jwt_required()
+def update_user(user_id):
+    
+
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({'msg': 'Debes enviar informacion en el body'}), 400
+    
+    user = db.session.get(User, user_id)
+
+    if user is None:
+        return jsonify({'msg': 'Usuario no encontrado'}), 404
+
+
+    current_user_email = get_jwt_identity()
+    current_user = User.query.filter_by(email=current_user_email).first()
+    
+    if current_user.id != user_id and not current_user.is_admin:
+        return jsonify({'msg': 'No tienes permisos para realizar esta acción'}), 403  
+
+    if current_user.is_admin:
+        if 'is_active' in body:
+            user.is_active = body['is_active']
+        if 'is_admin' in body:
+            user.is_admin = body['is_admin']
+
+       
+    if 'username' in body:
+        user.username = body['username']
+    
+    if 'email' in body:
+        user.email = body['email']
+    
+    if 'password' in body:
+        hash_password = bcrypt.generate_password_hash(body['password']).decode('utf-8')
+        user.password_hash = hash_password
+    
+    
+    db.session.commit()
+    
+    return jsonify({
+        'msg': 'Usuario actualizado',
         'user': user.serialize()
     }), 200

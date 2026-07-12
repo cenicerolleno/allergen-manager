@@ -1,0 +1,31 @@
+info:
+  name: PUT de user para borrar cuenta
+  type: http
+  seq: 6
+
+http:
+  method: PUT
+  url: http://127.0.0.1:5000/api/user/1
+  headers:
+    - name: Heather
+      value: Authoritation
+  body:
+    type: json
+    data: |-
+      {
+        
+        "email": "mrnolan88@gmail.com",
+        "password": "12345678",
+        "is_active": false,
+        "is_admin": true
+
+      }
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc4Mzg4NDkxMCwianRpIjoiOWQ3ZjdmODEtMzBmYS00OWVkLTg4ZmQtOWY2YzdkMmZlNmI1IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6Im1ybm9sYW44OEBnbWFpbC5jb20iLCJuYmYiOjE3ODM4ODQ5MTAsImNzcmYiOiI1ZDQ4ZTgxZC0wNjQyLTQ1Y2MtOTE2NC1hMDE1ODU5M2Y5NGYiLCJleHAiOjE3ODM4ODU4MTAsImlzX2FkbWluIjp0cnVlfQ.bKBDJ1_7ryBNEE4gDMBpAE8qWiBM6Ix1Y0cg_3F5UiM
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

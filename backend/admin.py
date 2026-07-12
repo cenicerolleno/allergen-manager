@@ -4,10 +4,10 @@ from models import User, Allergen, Ingredient, Dish, DishIngredient
 from extensions import db
 
 class UsersModelView(ModelView):
-    column_list = ('id', 'username', 'email', 'is_active')
+    column_list = ('id', 'username', 'email', 'is_active', 'is_admin')
     column_searchable_list = ('username', 'email')
-    form_columns = ('username', 'email', 'password_hash', 'is_active')
-    
+    form_columns = ('username', 'email', 'password_hash', 'is_active', 'is_admin')
+
 class AllergensModelView(ModelView):
     column_list = ('id', 'name', 'is_active')
     column_searchable_list = ('name',)
