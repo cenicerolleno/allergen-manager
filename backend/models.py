@@ -44,6 +44,7 @@ class User(db.Model):
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     email: Mapped[str] = mapped_column(String(120), nullable=False, unique=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    is_admin: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     
     
     def __repr__(self):
@@ -54,7 +55,8 @@ class User(db.Model):
             'id': self.id,
             'username': self.username,
             'email': self.email,
-            'is_active': self.is_active
+            'is_active': self.is_active,
+            'is_admin': self.is_admin
         }
         
     
